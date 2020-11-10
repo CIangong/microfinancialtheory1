@@ -1,0 +1,286 @@
+*global var:申明全局变量*
+global var "Size Lev Roa PPE Capital Cash Age Gdpr"
+
+*描述性统计*
+*********主要变量描述性统计*************
+*表1*
+*xi 命令是一个比较好的生成的虚拟变量的方法， 其含义表示增添互动项“interaction expansion”*
+*if e(sample) 等价于 if e(sample) == 1，表示只针对用于估计上一个模型的样本观测计算残差项。否则，默认的设置是对所有的样本观测计算残差。 直观的感受可以对比加了if条件和不加if条件的使用predict，然后观察残差项列的差异。*
+*c(s):Tables for epidemiologists (cs and csi),流行病学家表格*
+xi:reg   flnpat110  E_ind1 $var i.year  i.ind1,robust
+gen sample=e(sample)
+tabstat flnpat110 RD E_ind1 E_ind2 nature  $var  if sample==1,stat(N mean sd min p25 median p75 max) c(s) f(%10.4f)
+
+*********鼓励政策和非鼓励政策下企业发明专利数量的差异****
+*表2*
+*ttest对均数进行t检验。该检验可以对一个样本和一个假设的总体平均值进行。对成对和非成对数据可进行双样本检验。在无配对的双样本情况下，可选择性地放宽方差相等的假设。*
+*ttesti是ttest的直接形式*
+*直接命令不是从存储在内存中的数据，而是从作为参数键入的数字中获取数据的命令。即时的命令，实际上，把Stata变成了一个美化的手动计算器。*
+*有时您可能没有数据，但是您知道一些关于数据的信息，并且您所知道的足以执行统计测试。*
+*即时命令有以下属性:*
+*1. 它们从不干扰内存中的数据。*
+*2. 所有命令的语法都是相同的:命令名后跟数字，这些数字是用于计算统计信息的汇总统计信息。*
+*3.即时命令以字母i结尾，尽管反过来并不正确。*
+*4. 直接命令与它们的非直接“兄弟”一起被记录。*
+*总样本期间 全样本 鼓励 非鼓励 差异 的描述性统计*
+sum lnpat110  if E_ind1==1 
+sum lnpat110  if E_ind1==0
+ttesti 7752    .5480959     1.00529  3923    .4778926     .949753 
+*总样本期间 国有企业 鼓励 非鼓励 差异 的描述性统计*
+sum lnpat110  if E_ind1==1&nature==1 
+sum lnpat110  if E_ind1==0&nature==1
+ttesti 4916    .5916164    1.021429    2347    .5690408     1.05901 
+*总样本期间 民营企业 鼓励 非鼓励 差异 的描述性统计*
+sum lnpat110  if E_ind1==1&nature==0 
+sum lnpat110  if E_ind1==0&nature==0
+ttesti 2836    .4726563    .9722547  1576    .3421536    .7381589  
+*十一五规划 全样本 鼓励 非鼓励 差异 的描述性统计*
+sum lnpat110  if E_ind1==1 &dyear==11
+sum lnpat110  if E_ind1==0 &dyear==11
+ttesti 3742    .7741939    1.175511 2567    .5791771    1.055354 
+*十一五规划 国有企业 鼓励 非鼓励 差异 的描述性统计*
+sum lnpat110  if E_ind1==1 &dyear==11&nature==1
+sum lnpat110  if E_ind1==0 &dyear==11&nature==1
+ttesti 2628    .7910372    1.159602 1621    .6778745     1.15745 
+*十一五规划 民营企业 鼓励 非鼓励 差异 的描述性统计*
+sum lnpat110  if E_ind1==1 &dyear==11&nature==0
+sum lnpat110  if E_ind1==0 &dyear==11&nature==0
+ttesti 1114    .7344595    1.211815   946    .4100559     .826027 
+*十五规划 全样本 鼓励 非鼓励 差异 的描述性统计*
+sum lnpat110  if E_ind1==1 &dyear==10
+sum lnpat110  if E_ind1==0 &dyear==10
+ttesti 4010    .3371087     .756449 1356    .2861544    .6674511 
+*十五规划 国有企业 鼓励 非鼓励 差异 的描述性统计*
+sum lnpat110  if E_ind1==1 &dyear==10&nature==1
+sum lnpat110  if E_ind1==0 &dyear==10&nature==1
+ttesti 2288    .3625614    .7742237  726    .3260387      .74155 
+*十五规划 民营企业 鼓励 非鼓励 差异 的描述性统计*
+sum lnpat110  if E_ind1==1 &dyear==10&nature==0
+sum lnpat110  if E_ind1==0 &dyear==10&nature==0
+ttesti 1722    .3032899    .7310177  630    .2401924    .5673686 
+  
+***********实验组和控制组在产业政策调整前后的创新水平差异**********
+*表3*
+*全样本 控制组 调整前 调整后 lnpat110 的描述性统计*
+sum lnpat110  if ingroup==0 & inyear==0
+sum lnpat110  if ingroup==0 & inyear==1
+ttesti   798    .3182961    .6207492 937    .6785483    .9525114
+*全样本 实验组 调整前 调整后 lnpat110 的描述性统计*
+sum lnpat110  if ingroup==1 & inyear==0
+sum lnpat110  if ingroup==1 & inyear==1
+ttesti    1515     .518758    .8525574   1795    1.111131    1.210254
+*国有企业 控制组 调整前 调整后 lnpat110 的描述性统计*
+sum lnpat110  if ingroup==0 & inyear==0 &nature==1
+sum lnpat110  if ingroup==0 & inyear==1 &nature==1
+ttesti  445    .3781203    .6939019   600    .7176319    .9650797
+*国有企业 实验组 调整前 调整后 lnpat110 的描述性统计*
+sum lnpat110  if ingroup==1 & inyear==0 &nature==1
+sum lnpat110  if ingroup==1 & inyear==1 &nature==1
+ttesti  842    .5532932    .8477465 1247    1.118439    1.190813
+*民营企业 控制组 调整前 调整后 lnpat110 的描述性统计*
+sum lnpat110  if ingroup==0 & inyear==0 &nature==0
+sum lnpat110  if ingroup==0 & inyear==1 &nature==0
+ttesti  353    .2428802    .5048666 337    .6089633    .9270535 
+*民营企业 实验组 调整前 调整后 lnpat110 的描述性统计*
+sum lnpat110  if ingroup==1 & inyear==0 &nature==0
+sum lnpat110  if ingroup==1 & inyear==1 &nature==0
+ttesti  673    .4755504      .85721  548    1.094501    1.254322 
+
+* diff：Difference in differences estimation*
+* p: period(varname)     Indicates the binary period variable (0: before; 1: after).*
+* t: treated(varname)    Indicates the binary treatment variable (0: controls; 1:treated).*
+
+*全样本 Difference DID lnpat110 的描述性统计*
+diff lnpat110 ,p(ingroup)  t(inyear)
+*国有企业 Difference DID lnpat110 的描述性统计*
+diff lnpat110 if nature==1,p(ingroup)  t(inyear)
+*民营企业 Difference DID lnpat110 的描述性统计*
+diff lnpat110 if nature==0,p(ingroup)  t(inyear)
+
+*计量回归*
+***************产业政策与企业创新*****************
+*表4*
+*ind1：行业*
+*一般鼓励 发明专利 robust回归*
+xi:reg   flnpat110  E_ind1 $var i.year  i.ind1,robust
+est store a1
+*一般鼓励 研发费用 robust回归*
+xi:reg RD  E_ind1 $var i.year  i.ind1  ,robust
+est store a2
+*重点鼓励 发明专利 robust回归*
+xi:reg   flnpat110  E_ind2 $var i.year  i.ind1 ,robust
+est store a3
+*重点鼓励 研发费用 robust回归*
+xi:reg RD  E_ind2 $var i.year  i.ind1 ,robust
+est store a4
+
+*********产业政策对国有企业和民营企业创新的影响***********
+*表5*
+*一般鼓励 发明专利 国有企业 robust回归*
+xi:reg   flnpat110  E_ind1 $var i.year i.ind1 if nature==1,robust
+est store a1
+*一般鼓励 发明专利 民营企业 robust回归*
+xi:reg   flnpat110  E_ind1 $var i.year i.ind1  if nature==0,robust
+est store a2
+*一般鼓励 研发费用 国有企业 robust回归*
+xi:reg   RD  E_ind1 $var i.year i.ind1 if nature==1,robust
+est store a3
+*一般鼓励 研发费用 民营企业 robust回归*
+xi:reg   RD  E_ind1 $var i.year i.ind1 if nature==0,robust
+est store a4
+*重点鼓励 发明专利 国有企业 robust回归*
+xi:reg   flnpat110  E_ind2 $var i.year i.ind1  if nature==1,robust
+est store a5
+*重点鼓励 发明专利 民营企业 robust回归*
+xi:reg   flnpat110  E_ind2 $var i.year i.ind1 if nature==0,robust
+est store a6
+*重点鼓励 研发费用 国有企业 robust回归*
+xi:reg   RD  E_ind2 $var i.year i.ind1 if nature==1,robust
+est store a7
+*重点鼓励 研发费用 民营企业 robust回归*
+xi:reg   RD  E_ind2 $var i.year i.ind1 if nature==0,robust
+est store a8
+
+***************发明专利平行趋势*************
+*图1*
+*egen： Extensions to generate*
+*mean(exp)：creates a constant (within varlist) containing the mean of exp.*
+egen meanp2=mean( fpat110), by(year ingroup)
+sort year
+twoway (connect meanp2 year if ingroup==1 & year<=2010&year>=2003,lpattern(longdash)lwidth(thick)) (connect meanp2 year if ingroup==0 & year<=2010&year>=2003, lwidth(thick)) if year<=2010&year>=2003,xline(2006,lpattern(longdash) lwidth(medium thick)) title("发明专利平行趋势") ytitle("发明专利数量") xtitle("时间") legend(label(1 "实验组") label( 2 "控制组")) xscale(range (2003  2010)) xlabel(2003 (1) 2010 )
+
+*表6*
+****************did******************
+*c.: unary operator to treat as continuous*
+*## ：binary operator to specify factorial interactions*
+*全样本 双重差分检验*
+xi:reg   flnpat110 c.ingroup##c.inyear $var i.year i.indc,robust
+est store a1
+*国有企业 双重差分检验*
+xi:reg   flnpat110 c.ingroup##c.inyear $var i.year  i.indc if nature==1,robust
+est store a2
+*民营企业 双重差分检验*
+xi:reg   flnpat110 c.ingroup##c.inyear $var i.year  i.indc if nature==0,robust
+est store a3
+****************did+psm******************
+*help psmatch2*
+*psmatch2实现了完全马氏匹配和各种倾向评分匹配方法，以调整一组治疗组和一组未治疗组在治疗前可观察到的差异。治疗状态通过处理组的depvar==1和未治疗组的depvar==0来标识。*
+psmatch2 ingroup Size Lev Roa PPE Capital
+*全样本 PSM后的双重差分检验*
+xi:reg   flnpat110 c.ingroup##c.inyear $var i.year i.indc if  _weight~=.,robust
+est store a1
+*国有企业 PSM后的双重差分检验*
+xi:reg   flnpat110 c.ingroup##c.inyear $var i.year i.indc if  _weight~=. & nature==1,robust
+est store a2
+*民营企业 PSM后的双重差分检验*
+xi:reg   flnpat110 c.ingroup##c.inyear $var i.year i.indc if  _weight~=. & nature==0,robust
+est store a3
+
+****************信贷机制检验*******************
+*表7*
+*E_：系数参数的估计值*
+*一般鼓励 全样本 信贷机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.dlt $var i.year i.ind1,robust
+est store a1
+test   dlt +c.E_ind1#c.dlt=0
+*一般鼓励 国有企业 信贷机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.dlt $var i.year i.ind1 if nature==1,robust
+est store a2
+test   dlt +c.E_ind1#c.dlt=0
+*一般鼓励 民营企业 信贷机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.dlt $var i.year i.ind1 if nature==0,robust
+est store a3
+test   dlt +c.E_ind1#c.dlt=0
+*重点鼓励 全样本 信贷机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.dlt $var i.year i.ind1,robust
+est store a4
+test   dlt +c.E_ind2#c.dlt=0
+*重点鼓励 全样本 信贷机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.dlt $var i.year i.ind1 if nature==1,robust
+est store a5
+test   dlt +c.E_ind2#c.dlt=0
+*重点鼓励 全样本 信贷机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.dlt $var i.year i.ind1 if nature==0,robust
+est store a6
+test   dlt +c.E_ind2#c.dlt=0
+
+****************税收机制检验*******************
+*表8*
+*一般鼓励 全样本 税收机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.etr $var i.year i.ind1,robust
+est store a1
+test  etr+c.E_ind1#c.etr=0
+*一般鼓励 国有企业 税收机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.etr $var i.year i.ind1 if nature==1,robust
+est store a2
+test  etr+c.E_ind1#c.etr=0
+*一般鼓励 民营企业 税收机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.etr $var i.year  i.ind1 if nature==0,robust
+est store a3
+test etr+c.E_ind1#c.etr=0
+*重点鼓励 全样本 税收机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.etr $var i.year i.ind1 ,robust
+est store a4
+test  etr+c.E_ind2#c.etr=0
+*重点鼓励 全样本 税收机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.etr $var i.year i.ind1 if nature==1,robust
+est store a5
+test etr+c.E_ind2#c.etr=0
+*重点鼓励 全样本 税收机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.etr $var i.year i.ind1 if nature==0,robust
+est store a6
+test  etr+c.E_ind2#c.etr=0
+
+****************政府补贴机制检验*******************
+*表9*
+*一般鼓励 全样本 政府补贴机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.sub $var i.year i.ind1 ,robust
+est store a1
+test  sub+c.E_ind1#c.sub=0
+*一般鼓励 国有企业 政府补贴机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.sub $var i.year i.ind1 if nature==1,robust
+est store a2
+test  sub+c.E_ind1#c.sub=0
+*一般鼓励 民营企业 政府补贴机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.sub $var i.year i.ind1  if nature==0,robust
+est store a3
+test  sub+c.E_ind1#c.sub=0
+*重点鼓励 全样本 政府补贴机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.sub $var i.year i.ind1 ,robust
+est store a4
+test  sub+c.E_ind2#c.sub=0
+*重点鼓励 全样本 政府补贴机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.sub $var i.year i.ind1 if nature==1,robust 
+est store a5
+test  sub+c.E_ind2#c.sub=0
+*重点鼓励 全样本 政府补贴机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.sub $var i.year i.ind1 if nature==0,robust
+est store a6
+test  sub+c.E_ind2#c.sub=0
+
+****************市场竞争机制检验*******************
+*表10*
+*一般鼓励 全样本 竞争机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.hhi $var i.year i.ind1,robust
+est store a1
+test  hhi+c.E_ind1#c.hhi=0
+*一般鼓励 国有企业 竞争机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.hhi $var i.year i.ind1 if nature==1,robust
+est store a2
+test  hhi+c.E_ind1#c.hhi=0
+*一般鼓励 民营企业 竞争机制与企业创新*
+xi:reg   flnpat110  c.E_ind1##c.hhi $var i.year i.ind1 if nature==0,robust
+est store a3
+test  hhi+c.E_ind1#c.hhi=0
+*重点鼓励 全样本 竞争机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.hhi $var i.year i.ind1,robust
+est store a4
+test  hhi+c.E_ind2#c.hhi=0
+*重点鼓励 全样本 竞争机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.hhi $var i.year i.ind1 if nature==1,robust
+est store a5
+test  hhi+c.E_ind2#c.hhi=0
+*重点鼓励 全样本 竞争机制与企业创新*
+xi:reg   flnpat110  c.E_ind2##c.hhi $var i.year i.ind1 if nature==0,robust
+est store a6
+test  hhi+c.E_ind2#c.hhi=0
